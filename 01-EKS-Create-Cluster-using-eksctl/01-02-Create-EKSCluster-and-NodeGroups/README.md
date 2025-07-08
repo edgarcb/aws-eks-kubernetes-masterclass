@@ -16,9 +16,8 @@
 - It will take 15 to 20 minutes to create the Cluster Control Plane 
 ```
 # Create Cluster
-eksctl create cluster --name=eksdemo1 \
-                      --region=us-east-1 \
-                      --zones=us-east-1a,us-east-1b \
+eksctl create cluster --name=eks-dev `
+                      --zones=us-east-1a,us-east-1b `
                       --without-nodegroup 
 
 # Get List of clusters
@@ -32,19 +31,18 @@ eksctl get cluster
 - Use latest eksctl version (as on today the latest version is `0.21.0`)
 ```                   
 # Template
-eksctl utils associate-iam-oidc-provider \
-    --region region-code \
-    --cluster <cluter-name> \
+eksctl utils associate-iam-oidc-provider `
+    --region region-code `
+    --cluster <cluter-name> `
     --approve
 
 # Replace with region & cluster name
-eksctl utils associate-iam-oidc-provider \
-    --region us-east-1 \
-    --cluster eksdemo1 \
+eksctl utils associate-iam-oidc-provider `
+    --cluster eks-dev `
     --approve
 ```
 
-
+ 
 
 ## Step-03: Create EC2 Keypair
 - Create a new EC2 Keypair with name as `kube-demo`
@@ -55,21 +53,20 @@ eksctl utils associate-iam-oidc-provider \
 - These add-ons will create the respective IAM policies for us automatically within our Node Group role.
  ```
 # Create Public Node Group   
-eksctl create nodegroup --cluster=eksdemo1 \
-                        --region=us-east-1 \
-                        --name=eksdemo1-ng-public1 \
-                        --node-type=t3.medium \
-                        --nodes=2 \
-                        --nodes-min=2 \
-                        --nodes-max=4 \
-                        --node-volume-size=20 \
-                        --ssh-access \
-                        --ssh-public-key=kube-demo \
-                        --managed \
-                        --asg-access \
-                        --external-dns-access \
-                        --full-ecr-access \
-                        --appmesh-access \
+eksctl create nodegroup --cluster=eks-dev `
+                        --name=eks-dev-ng-public1 `
+                        --node-type=t3.medium `
+                        --nodes=2 `
+                        --nodes-min=2 `
+                        --nodes-max=4 `
+                        --node-volume-size=20 `
+                        --ssh-access `
+                        --ssh-public-key=kube-dev `
+                        --managed `
+                        --asg-access `
+                        --external-dns-access `
+                        --full-ecr-access `
+                        --appmesh-access `
                         --alb-ingress-access 
 ```
 
@@ -77,13 +74,13 @@ eksctl create nodegroup --cluster=eksdemo1 \
 
 ### Verify NodeGroup subnets to confirm EC2 Instances are in Public Subnet
 - Verify the node group subnet to ensure it created in public subnets
-  - Go to Services -> EKS -> eksdemo -> eksdemo1-ng1-public
+  - Go to Services -> EKS -> eksdemo -> eks-dev-ng1-public
   - Click on Associated subnet in **Details** tab
   - Click on **Route Table** Tab.
   - We should see that internet route via Internet Gateway (0.0.0.0/0 -> igw-xxxxxxxx)
 
 ### Verify Cluster, NodeGroup in EKS Management Console
-- Go to Services -> Elastic Kubernetes Service -> eksdemo1
+- Go to Services -> Elastic Kubernetes Service -> eks-dev
 
 ### List Worker Nodes
 ```
