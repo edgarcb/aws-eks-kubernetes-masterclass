@@ -32,8 +32,8 @@ eksctl get cluster
 ```                   
 # Template
 eksctl utils associate-iam-oidc-provider `
-    --region region-code `
-    --cluster <cluter-name> `
+    --region us-east-1 `
+    --cluster eks-dev `
     --approve
 
 # Replace with region & cluster name
